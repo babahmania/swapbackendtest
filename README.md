@@ -31,9 +31,8 @@ Flight search system for swapbackendtest
 go run main.go
 
 # Docker
-docker compose build --no-cache
-docker compose up
-
+- docker compose build --no-cache
+- docker compose up
 Note / Issue : 
 https://forum.golangbridge.org/t/golang-not-connecting-to-mysql-thought-jinzhu-gorm-and-hosted-by-docker/3162
 MySQL does starts before Golang, but, Golang is faster about trying to connect to the DB,
