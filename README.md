@@ -26,6 +26,12 @@ Flight search system for swapbackendtest
 - [ ] Swagger Documentation API
 - [X] Automigrate Schema Database
 - [X] Docker
+- [X] Unit testing coverage
+    - User Service :
+        - TestSaveUser_Success : go test -timeout 30s -run ^TestSaveUser_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestSaveUser_Failure : go test -timeout 30s -run ^TestSaveUser_Failure$ swapbackendtest/infrastructure/persistence -v
+        - TestGetUser_Success  : go test -timeout 30s -run ^TestGetUser_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetUserByEmailAndPassword_Success  : go test -timeout 30s -run ^TestGetUserByEmailAndPassword_Success$ swapbackendtest/infrastructure/persistence -v
 
 # Start 
 go run main.go

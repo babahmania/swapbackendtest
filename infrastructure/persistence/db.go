@@ -38,7 +38,12 @@ func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string
 	//db, err := gorm.Open(Dbdriver, DBURL)
 
 	//dsn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbName,)
+	//for docker
 	dsn := fmt.Sprintf("%s:%s@tcp(db:3306)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbName)
+	/*
+		//for local
+		dsn := fmt.Sprintf("%s:%s@tcp(192.168.1.212:3308)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbName)
+	*/
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
