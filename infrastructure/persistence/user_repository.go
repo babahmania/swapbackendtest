@@ -10,8 +10,10 @@ import (
 	"swapbackendtest/infrastructure/security"
 	"swapbackendtest/infrastructure/validator"
 
-	"github.com/jinzhu/gorm"
+	//"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
+
+	"gorm.io/gorm"
 )
 
 type UserRepo struct {
@@ -60,7 +62,8 @@ func (r *UserRepo) GetUser(id uint64) (*entity.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	//if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("user not found")
 	}
 	return &user, nil
@@ -72,7 +75,8 @@ func (r *UserRepo) GetUsers() ([]entity.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	//if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("user not found")
 	}
 	return users, nil
@@ -81,7 +85,8 @@ func (r *UserRepo) GetUsers() ([]entity.User, error) {
 func (r *UserRepo) GetUserByEmailAndPassword(u *entity.User) (*entity.User, error) {
 	var user entity.User
 	err := r.db.Debug().Where("email = ?", u.Email).Take(&user).Error
-	if gorm.IsRecordNotFoundError(err) {
+	//if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("user not found")
 	}
 	if err != nil {

@@ -14,6 +14,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func init() {
@@ -24,6 +26,18 @@ func init() {
 }
 
 func main() {
+	/*
+		//issue mysql can not be connect in docker
+		//test connection use github.com/go-sql-driver/mysql
+		dbDocker, err := sql.Open("mysql", "swap:Sw4p-1443@tcp(db:3306)/flight-app-fiber")
+		// if there is an error opening the connection, handle it
+		if err != nil {
+			log.Print(err.Error())
+		}
+		fmt.Println("connect")
+		defer dbDocker.Close()
+		panic(err)
+	*/
 
 	dbdriver := os.Getenv("DB_DRIVER")
 	host := os.Getenv("DB_HOST")
@@ -42,7 +56,7 @@ func main() {
 		panic(err)
 	}
 	defer services.Close()
-	services.Automigrate()
+	//services.Automigrate()
 
 	redisService, err := auth.NewRedisDB(redis_host, redis_port, redis_password)
 	if err != nil {

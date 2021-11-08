@@ -9,7 +9,8 @@ import (
 	"swapbackendtest/domain/repository"
 	"swapbackendtest/infrastructure/validator"
 
-	"github.com/jinzhu/gorm"
+	//"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type AirlineRepo struct {
@@ -52,7 +53,8 @@ func (r *AirlineRepo) GetAirline(id uint64) (*entity.Airline, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.IsRecordNotFoundError(err) {
 		return nil, errors.New("airline not found")
 	}
 	return &airline, nil
@@ -64,7 +66,8 @@ func (r *AirlineRepo) GetAirlines() ([]entity.Airline, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.IsRecordNotFoundError(err) {
 		return nil, errors.New("airline not found")
 	}
 	return airlines, nil

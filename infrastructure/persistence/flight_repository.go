@@ -9,7 +9,8 @@ import (
 	"swapbackendtest/domain/repository"
 	"swapbackendtest/infrastructure/validator"
 
-	"github.com/jinzhu/gorm"
+	//"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type FlightRepo struct {
@@ -53,7 +54,8 @@ func (r *FlightRepo) GetFlight(id uint64) (*entity.Flight, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.ErrRecordNotFound(err) {
 		return nil, errors.New("flight not found")
 	}
 	return &flight, nil
@@ -65,7 +67,8 @@ func (r *FlightRepo) GetFlights() ([]entity.Flight, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.IsRecordNotFoundError(err) {
 		return nil, errors.New("flight not found")
 	}
 	return flights, nil
@@ -82,7 +85,8 @@ func (r *FlightRepo) GetFlightLocation(originId uint64, destinationId uint64, qt
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.IsRecordNotFoundError(err) {
 		return nil, errors.New("flight not found")
 	}
 	return flights, nil
@@ -105,7 +109,8 @@ func (r *FlightRepo) GetFlightLocationFind(originId uint64, destinationId uint64
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.IsRecordNotFoundError(err) {
 		return nil, errors.New("flight not found")
 	}
 	return flights, nil

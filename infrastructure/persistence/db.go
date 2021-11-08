@@ -7,8 +7,12 @@ import (
 	"swapbackendtest/domain/repository"
 	"time"
 
-	"github.com/jinzhu/gorm"
+	//"github.com/jinzhu/gorm"
 	//_ "github.com/jinzhu/gorm/dialects/mysql"
+	//_ "github.com/go-sql-driver/mysql"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -22,12 +26,25 @@ type Repositories struct {
 }
 
 func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) (*Repositories, error) {
-	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", DbUser, DbPassword, DbHost, DbPort, DbName)
-	db, err := gorm.Open(Dbdriver, DBURL)
+	//dsn := fmt.Sprintf("%s:%s@tcp(mariadb:3306)/%s?charset=utf8&parseTime=True&loc=Local", user, password, database)
+	//DBURL := fmt.Sprintf("%s:%s@tcp(mariadb:3306)/%s?charset=utf8&parseTime=True&loc=Asia/Jakarta", DbUser, DbPassword, DbHost, DbPort, DbName)
+	//db, err := sql.Open("mysql", "tester:secret@tcp(db:3306)/test")
+	//dsn := fmt.Sprintf("%s:%s@tcp(mariadb:3306)/%s?charset=utf8&parseTime=True&loc=Local", user, password, database)
+	//db, err := sql.Open(Dbdriver, DBURL)
+	//DBURL := fmt.Sprintf("%s:%s@tcp(db:3306)/%s?charset=utf8&parseTime=True&loc=Asia/Jakarta", DbUser, DbPassword, DbName)
+	//DBURL := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?charset=utf8&parseTime=True&loc=Asia/Jakarta", DbUser, DbPassword, DbName)
+	//DBURL := fmt.Sprintf("%s:%s@tcp(172.30.32.1:3306)/%s?charset=utf8&parseTime=True&loc=Asia/Jakarta", DbUser, DbPassword, DbName)
+	//DBURL := fmt.Sprintf("%s:%s@tcp(db:3306)/%s?charset=utf8&parseTime=True&loc=Asia/Jakarta", DbUser, DbPassword, DbName)
+	//db, err := gorm.Open(Dbdriver, DBURL)
+
+	//dsn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbName,)
+	dsn := fmt.Sprintf("%s:%s@tcp(db:3306)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbName)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
 	if err != nil {
 		return nil, err
 	}
-	db.LogMode(true)
+	//db.LogMode(true)
 
 	return &Repositories{
 		User:    NewUserRepository(db),
@@ -40,7 +57,8 @@ func NewRepositories(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string
 
 //closes the  database connection
 func (s *Repositories) Close() error {
-	return s.db.Close()
+	//return s.db.Close
+	return nil
 }
 
 //FlightView
@@ -105,83 +123,14 @@ func (s *Repositories) GetFlightLocationFind(originId uint64, destinationId uint
 		fmt.Println(departureTime)
 		fmt.Println(depTime)
 	*/
-	fmt.Println(sql)
+	//fmt.Println(sql)
 	err = s.db.Raw(sql).Order(orderBy).Scan(&flights).Error
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	//if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("flight not found")
 	}
 	return flights, nil
-}
-
-//This migrate all tables
-func (s *Repositories) Automigrate() error {
-	results := s.db.AutoMigrate(&entity.User{},
-		&entity.Airport{}, &entity.Airline{}, &entity.Aircraft{},
-		&entity.Flight{},
-	).Error
-	if results == nil {
-		s.db.Model(&entity.Flight{}).AddForeignKey("airline_id", "airlines(id)", "RESTRICT", "RESTRICT")
-		s.db.Model(&entity.Flight{}).AddForeignKey("origin_id", "airports(id)", "RESTRICT", "RESTRICT")
-		s.db.Model(&entity.Flight{}).AddForeignKey("destination_id", "airports(id)", "RESTRICT", "RESTRICT")
-		s.db.Model(&entity.Flight{}).AddForeignKey("aircraft_id", "aircrafts(id)", "RESTRICT", "RESTRICT")
-		s.db.Model(&entity.Flight{}).AddForeignKey("user_id_submit", "users(id)", "RESTRICT", "RESTRICT")
-
-		//CreateView(name string, option ViewOption) error
-		//db.Migrator().CreateTable(&User{})
-		//s.db.Migrator()
-		/*
-					//"view_flights", "SELECT `flights`.`id`,
-			    `flights`.`flight_number`,
-			    `flights`.`airline_id`,
-			    `airlines`.`name` as airline_name,
-			    `airlines`.`image_name` as airline_image_name,
-			    `flights`.`origin_id`,
-			    origin_airport.`name` as origin_name,
-			    origin_airport.`code` as origin_code,
-			    `flights`.`destination_id`,
-			    destination_airport.`name` as destination_name,
-			    destination_airport.`code` as destination_code,
-			    `flights`.`aircraft_id`,
-			    `aircrafts`.`name` as aircraft_name,
-			    `flights`.`depart_datetime`,
-			    `flights`.`arrival_datetime`,
-			    `flights`.`duration`,
-			    `flights`.`price`,
-			    `flights`.`seats_available`,
-			    `flights`.`qty_transit`,
-			    `flights`.`flight_status`,
-			    `flights`.`user_id_submit`,
-			    `flights`.`user_id_update`,
-			    `flights`.`user_id_delete`,
-			    `flights`.`transit_first`,
-			    `flights`.`transit_second`,
-			    `flights`.`transit_third`,
-			    `flights`.`is_economy`,
-			    `flights`.`seats_available_economy`,
-			    `flights`.`is_premium_economy`,
-			    `flights`.`seats_available_premium_economy`,
-			    `flights`.`is_business`,
-			    `flights`.`seats_available_business`,
-			    `flights`.`is_first_class`,
-			    `flights`.`seats_available_first_class`,
-			    `flights`.`qty_baggage`,
-			    `flights`.`qty_cabin`,
-			    `flights`.`is_meal`,
-			    `flights`.`is_entertainment`,
-			    `flights`.`is_power_usb`,
-			    `flights`.`is_active`
-			FROM `flight-app-fiber`.`flights`, `flight-app-fiber`.`airlines`,
-			`flight-app-fiber`.`airports` as origin_airport, `flight-app-fiber`.`airports` as destination_airport,
-			`flight-app-fiber`.`aircrafts`
-			where `flights`.`airline_id`=`airlines`.`id` and
-			`flights`.`origin_id`=origin_airport.`id` and
-			`flights`.`destination_id`=destination_airport.`id` and
-			`flights`.`aircraft_id`=`aircrafts`.`id`
-			order by `flights`.`depart_datetime`"
-		*/
-	}
-	return results
 }

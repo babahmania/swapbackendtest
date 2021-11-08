@@ -9,7 +9,9 @@ import (
 	"swapbackendtest/domain/repository"
 	"swapbackendtest/infrastructure/validator"
 
-	"github.com/jinzhu/gorm"
+	//"github.com/jinzhu/gorm"
+
+	"gorm.io/gorm"
 )
 
 type AirportRepo struct {
@@ -52,7 +54,8 @@ func (r *AirportRepo) GetAirport(id uint64) (*entity.Airport, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		//if gorm.IsRecordNotFoundError(err) {
 		return nil, errors.New("airport not found")
 	}
 	return &airport, nil
@@ -64,7 +67,8 @@ func (r *AirportRepo) GetAirports() ([]entity.Airport, error) {
 	if err != nil {
 		return nil, err
 	}
-	if gorm.IsRecordNotFoundError(err) {
+	//if gorm.IsRecordNotFoundError(err) {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("airport not found")
 	}
 	return airports, nil
