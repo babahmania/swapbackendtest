@@ -32,6 +32,28 @@ Flight search system for swapbackendtest
         - TestSaveUser_Failure : go test -timeout 30s -run ^TestSaveUser_Failure$ swapbackendtest/infrastructure/persistence -v
         - TestGetUser_Success  : go test -timeout 30s -run ^TestGetUser_Success$ swapbackendtest/infrastructure/persistence -v
         - TestGetUserByEmailAndPassword_Success  : go test -timeout 30s -run ^TestGetUserByEmailAndPassword_Success$ swapbackendtest/infrastructure/persistence -v
+        - All Test :  E:\Go\bin\go.exe test -timeout 30s -run ^(TestSaveUser_Success|TestSaveUser_Failure|TestGetUser_Success|TestGetUsers_Success|TestGetUserByEmailAndPassword_Success)$ swapbackendtest/infrastructure/persistence -v
+
+    - Airline Service :
+        - TestSaveAirline_Failure : go test -timeout 30s -run ^TestSaveAirline_Failure$ swapbackendtest/infrastructure/persistence -v
+        - TestGetAirline_Success : go test -timeout 30s -run ^TestGetAirline_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetAirlines_Success : go test -timeout 30s -run ^TestGetAirlines_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetAirlineByID_Success : go test -timeout 30s -run ^TestGetAirlineByID_Success$ swapbackendtest/infrastructure/persistence -v
+        - All Test : E:\Go\bin\go.exe test -timeout 30s -run ^(TestSaveAirline_Failure|TestGetAirline_Success|TestGetAirlines_Success|TestGetAirlineByID_Success)$ swapbackendtest/infrastructure/persistence -v
+
+    - Airport Service :
+        - TestSaveAirport_Failure : go test -timeout 30s -run ^TestSaveAirport_Failure$ swapbackendtest/infrastructure/persistence -v
+        - TestGetAirport_Success : go test -timeout 30s -run ^TestGetAirport_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetAirport_Success : go test -timeout 30s -run ^TestGetAirports_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetAirportByID_Success : go test -timeout 30s -run ^TestGetAirportByID_Success$ swapbackendtest/infrastructure/persistence -v
+        - All Test : E:\Go\bin\go.exe test -timeout 30s -run ^(TestSaveAirport_Failure|TestGetAirport_Success|TestGetAirports_Success|TestGetAirportByID_Success)$ swapbackendtest/infrastructure/persistence -v
+
+    - Flight Service :
+        - TestSaveFlight_Failure : go test -timeout 30s -run ^TestSaveFlight_Failure$ swapbackendtest/infrastructure/persistence -v
+        - TestGetFlight_Success : go test -timeout 30s -run ^TestGetFlight_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetFlight_Success : go test -timeout 30s -run ^TestGetFlights_Success$ swapbackendtest/infrastructure/persistence -v
+        - TestGetFlightByID_Success : go test -timeout 30s -run ^TestGetFlightByID_Success$ swapbackendtest/infrastructure/persistence -v
+        - All Test : go test -timeout 30s -run ^(TestSaveFlight_Failure|TestGetFlight_Success|TestGetFlights_Success|TestGetFlightByID_Success)$ swapbackendtest/infrastructure/persistence -v
 
 # Start 
 go run main.go

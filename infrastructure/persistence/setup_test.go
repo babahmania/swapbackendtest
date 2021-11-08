@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"swapbackendtest/domain/entity"
 
 	//"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
@@ -70,42 +69,4 @@ func LocalDatabase() (*gorm.DB, error) {
 		}
 	*/
 	return conn, nil
-}
-
-func seedUser(db *gorm.DB) (*entity.User, error) {
-	user := &entity.User{
-		ID:         1,
-		FullName:   "kurniababahmania",
-		UserStatus: "1",
-		UserRole:   "1",
-		Email:      "kurniababahmania",
-		Password:   "kurniababahmania",
-		DeletedAt:  nil,
-	}
-	err := db.Create(&user).Error
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-func seedUsers(db *gorm.DB) ([]entity.User, error) {
-	users := []entity.User{
-		{
-			ID:         1,
-			FullName:   "kurniababahmania",
-			UserStatus: "1",
-			UserRole:   "1",
-			Email:      "kurniababahmania@gmail.com",
-			Password:   "kurniababahmania@gmail.com",
-			DeletedAt:  nil,
-		},
-	}
-	for _, v := range users {
-		err := db.Create(&v).Error
-		if err != nil {
-			return nil, err
-		}
-	}
-	return users, nil
 }

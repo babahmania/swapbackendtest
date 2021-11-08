@@ -39,24 +39,18 @@ func TestSaveUser_Failure(t *testing.T) {
 	if err != nil {
 		t.Fatalf("want non error, got %#v", err)
 	}
-	//seed the user
-	_, err = seedUser(conn)
-	if err != nil {
-		t.Fatalf("want non error, got %#v", err)
-	}
 	var user = entity.User{}
 	user.Email = "babahmania@gmail.com"
 	user.FullName = "babahmania@gmail.com"
 	user.UserStatus = "1"
+	user.UserRole = "1"
 	user.Password = "babahmania@gmail.com"
 
 	repo := NewUserRepository(conn)
 	u, saveErr := repo.SaveUser(&user)
-	dbMsg := map[string]string{
-		"email_taken": "email already taken",
-	}
+	dbMsg := "email already taken"
 	assert.Nil(t, u)
-	assert.EqualValues(t, dbMsg, saveErr)
+	assert.EqualError(t, saveErr, dbMsg)
 }
 
 func TestGetUser_Success(t *testing.T) {
@@ -64,13 +58,10 @@ func TestGetUser_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("want non error, got %#v", err)
 	}
-	//seed the user
-	user, err := seedUser(conn)
-	if err != nil {
-		t.Fatalf("want non error, got %#v", err)
-	}
+	var data = entity.User{}
+	data.ID = 1
 	repo := NewUserRepository(conn)
-	u, getErr := repo.GetUser(user.ID)
+	u, getErr := repo.GetUser(data.ID)
 
 	assert.Nil(t, getErr)
 	assert.EqualValues(t, u.Email, "babahmania@gmail.com")
@@ -80,12 +71,6 @@ func TestGetUser_Success(t *testing.T) {
 
 func TestGetUsers_Success(t *testing.T) {
 	conn, err := DBConn()
-	if err != nil {
-		t.Fatalf("want non error, got %#v", err)
-	}
-
-	//seed the users
-	_, err = seedUsers(conn)
 	if err != nil {
 		t.Fatalf("want non error, got %#v", err)
 	}
@@ -101,13 +86,6 @@ func TestGetUserByEmailAndPassword_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("want non error, got %#v", err)
 	}
-	/*
-		//seed the user
-		_, err = seedUser(conn)
-		if err != nil {
-			t.Fatalf("want non error, got %#v", err)
-		}
-	*/
 	var user = &entity.User{
 		Email:    "babahmania@gmail.com",
 		Password: "babahmania@gmail.com",
@@ -116,7 +94,5 @@ func TestGetUserByEmailAndPassword_Success(t *testing.T) {
 	u, getErr := repo.GetUserByEmailAndPassword(user)
 
 	assert.Nil(t, getErr)
-	//assert.EqualValues(t, u.Email, user.Email)
-	//Note, the user password from the database should not be equal to a plane password, because that one is hashed
 	assert.NotEqual(t, u.Password, user.Password)
 }
